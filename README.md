@@ -1,3 +1,3 @@
 # Setback
 ## Architecture Diagram
-![Alt](SetBackAWS.png)
+![Alt](SetBackAWS.drawio.png)
