@@ -14,10 +14,11 @@
     "lint": "eslint '*.ts' --quiet --fix",
     "compile": "tsc",
     "test": "npm run compile && npm run unit",
-    "build": "esbuild app.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/app.js"},
+    "build": "esbuild app.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/app.js"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.5.2",
     "@types/node": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",

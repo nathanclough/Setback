@@ -38,3 +38,4 @@ terraform.rc
 #ignor dist folders 
 **/dist
  
+**/coverage
