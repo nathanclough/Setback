@@ -1,4 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { Session } from "opt/nodejs/Entities"
+import { ConnectEvent } from 'opt/nodejs/Events';
 
 /**
  *
@@ -13,7 +15,15 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     console.log(event)
     let response: APIGatewayProxyResult;
+    if(!event.requestContext.connectionId)
+        return {statusCode: 500, body: JSON.stringify({
+            message:"No connectionId",
+        })}
     try {
+        const connectEvent = new ConnectEvent(event.requestContext.connectionId)
+        const session = new Session(connectEvent)
+        // save to db session
+
         response = {
             statusCode: 200,
             body: JSON.stringify({

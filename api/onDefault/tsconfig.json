@@ -10,6 +10,12 @@
       "esModuleInterop": true, 
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,  
+      "baseUrl": ".",
+      "paths": {
+        "opt/nodejs/*": [
+          "../../CommonLayer/*"
+        ]
+      },
     },
     "exclude": ["node_modules"],
 

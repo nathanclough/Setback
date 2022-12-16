@@ -40,6 +40,7 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = data.archive_file.source.output_base64sha256
 
   role = var.lambda_exec_role_arn
+  layers = [aws_lambda_layer_version.common_layer.arn]
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
