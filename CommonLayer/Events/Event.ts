@@ -6,4 +6,11 @@ export abstract class Event {
         this.id = uuidv4()
         this.timestamp = new Date()
     }
+
+    toJSON():{[key:string]: string}{
+        return{
+            id: this.id,
+            timestamp: this.timestamp.toISOString()
+        }
+    } 
 }

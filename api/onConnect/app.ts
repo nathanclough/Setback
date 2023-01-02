@@ -1,7 +1,6 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Session } from "opt/nodejs/Entities"
-import { ConnectEvent } from 'opt/nodejs/Events';
-
+import { APIGatewayProxyEvent, APIGatewayProxyResult, } from 'aws-lambda';
+import { ConnectEvent } from "opt/nodejs/Events"; 
+import {DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb"
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -20,10 +19,20 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             message:"No connectionId",
         })}
     try {
-        const connectEvent = new ConnectEvent(event.requestContext.connectionId)
-        const session = new Session(connectEvent)
-        // save to db session
 
+        
+        const connectEvent = new ConnectEvent(event.requestContext.connectionId)
+        const client = new DynamoDBClient({region:"us-east-1"})
+        const command = new PutItemCommand({
+            TableName: process.env.EVENTS_TABLE,
+            Item:{
+                id: {S: connectEvent.id}, 
+                timestamp: {S: connectEvent.timestamp.toISOString()},
+                connectionId: {S: connectEvent.connectionId},
+            },
+          })
+        await client.send(command)
+        
         response = {
             statusCode: 200,
             body: JSON.stringify({

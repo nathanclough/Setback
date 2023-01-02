@@ -5,4 +5,12 @@ export class ConnectEvent extends Event{
         super()
         this.connectionId = connectionId
     }
+
+    public override toJSON(){
+        
+        return{
+            ...super.toJSON(),
+            connectionId: this.connectionId
+        } 
+    }
 } 

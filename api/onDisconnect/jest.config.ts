@@ -8,6 +8,7 @@ export default {
         '^.+\\.ts?$': 'esbuild-jest',
     },
     clearMocks: true,
+    moduleNameMapper: {'^opt/nodejs/(.*)$': '<rootDir>/../../CommonLayer/$1',},
     collectCoverage: true,
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',

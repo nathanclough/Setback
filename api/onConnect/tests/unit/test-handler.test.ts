@@ -1,8 +1,21 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { lambdaHandler } from '../../app';
+import { mockClient } from "aws-sdk-client-mock";
+import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb"
 
 describe('Unit test for app handler', function () {
+    const env = process.env
+    const EVENTS_TABLE = "tablename"
+    beforeEach(() => {
+        jest.resetModules()
+        process.env = { ...env,  EVENTS_TABLE : EVENTS_TABLE}
+    })
+
+    afterEach(() => {
+        process.env = env
+    })
     it('verifies successful response', async () => {
+        const ddbMock = mockClient(DynamoDBClient);
         const event: APIGatewayProxyEvent = {
             httpMethod: 'get',
             body: '',
@@ -48,6 +61,7 @@ describe('Unit test for app handler', function () {
                 resourceId: '123456',
                 resourcePath: '/hello',
                 stage: 'dev',
+                connectionId: "1"
             },
             resource: '',
             stageVariables: {},
@@ -57,7 +71,7 @@ describe('Unit test for app handler', function () {
         expect(result.statusCode).toEqual(200);
         expect(result.body).toEqual(
             JSON.stringify({
-                message: 'hello world',
+                message: 'hello world - connect',
             }),
         );
     });

@@ -4,6 +4,7 @@ variable "bucket" {}
 variable "apigateway_execution_arn" {}
 variable "lambda_exec_role_name" {}
 variable "lambda_exec_role_arn" {}
+variable "env_vars" {}
 
 output "function_name" {
     value = aws_lambda_function.lambda.function_name
@@ -38,7 +39,9 @@ resource "aws_lambda_function" "lambda" {
   handler = "app.lambdaHandler"
 
   source_code_hash = data.archive_file.source.output_base64sha256
-
+  environment {
+    variables = var.env_vars
+  }
   role = var.lambda_exec_role_arn
   layers = [aws_lambda_layer_version.common_layer.arn]
 }
