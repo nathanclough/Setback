@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { lambdaHandler } from '../../app';
 import { mockClient } from "aws-sdk-client-mock";
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb"
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 
 describe('Unit test for app handler', function () {
     const env = process.env

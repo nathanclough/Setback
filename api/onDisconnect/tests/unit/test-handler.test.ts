@@ -1,7 +1,18 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { lambdaHandler } from '../../app';
-
+import {mockClient} from "aws-sdk-client-mock";
 describe('Unit test for app handler', function () {
+    const env = process.env
+    const EVENTS_TABLE = "tablename"
+    beforeEach(() => {
+        jest.resetModules()
+        process.env = { ...env,  EVENTS_TABLE : EVENTS_TABLE}
+    })
+
+    afterEach(() => {
+        process.env = env
+    })
     it('verifies successful response', async () => {
         const event: APIGatewayProxyEvent = {
             httpMethod: 'get',
@@ -15,6 +26,7 @@ describe('Unit test for app handler', function () {
             queryStringParameters: {},
             requestContext: {
                 accountId: '123456789012',
+                connectionId: "1",
                 apiId: '1234',
                 authorizer: {},
                 httpMethod: 'get',
@@ -52,12 +64,13 @@ describe('Unit test for app handler', function () {
             resource: '',
             stageVariables: {},
         };
+        mockClient(DynamoDBClient);
         const result: APIGatewayProxyResult = await lambdaHandler(event);
 
         expect(result.statusCode).toEqual(200);
         expect(result.body).toEqual(
             JSON.stringify({
-                message: 'hello world',
+                message: 'hello world - from disconnect',
             }),
         );
     });

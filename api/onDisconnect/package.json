@@ -6,6 +6,7 @@
   "author": "Nathan Clough",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.241.0",
     "esbuild": "^0.14.14"
   },
   "scripts": {
@@ -22,6 +23,7 @@
     "@types/node": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
+    "aws-sdk-client-mock": "^2.0.1",
     "esbuild-jest": "^0.5.0",
     "eslint": "^8.8.0",
     "eslint-config-prettier": "^8.3.0",

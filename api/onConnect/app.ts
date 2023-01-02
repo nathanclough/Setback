@@ -29,6 +29,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 id: {S: connectEvent.id}, 
                 timestamp: {S: connectEvent.timestamp.toISOString()},
                 connectionId: {S: connectEvent.connectionId},
+                type: {S: "connectEvent"}
             },
           })
         await client.send(command)
