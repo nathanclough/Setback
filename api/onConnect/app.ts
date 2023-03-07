@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, } from 'aws-lambda';
 import { ConnectEvent } from "opt/nodejs/Events"; 
-import {DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb"
+import Publisher from "opt/nodejs/Publisher";
+
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -20,25 +21,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         })}
     try {
 
-        
         const connectEvent = new ConnectEvent(event.requestContext.connectionId)
-        const client = new DynamoDBClient({region:"us-east-1"})
-        const command = new PutItemCommand({
-            TableName: process.env.EVENTS_TABLE,
-            Item:{
-                id: {S: connectEvent.id}, 
-                timestamp: {S: connectEvent.timestamp.toISOString()},
-                connectionId: {S: connectEvent.connectionId},
-                type: {S: "connectEvent"}
-            },
-          })
-        await client.send(command)
-        
+        const res = await Publisher.Publish(connectEvent)
         response = {
             statusCode: 200,
-            body: JSON.stringify({
-                message: 'hello world - connect',
-            }),
+            body: JSON.stringify(res),
         };
     } catch (err: unknown) {
         console.log(err);
@@ -50,6 +37,5 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         };
     }
 
-    console.log(response)
     return response;
 };

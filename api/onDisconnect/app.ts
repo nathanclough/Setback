@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import {DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb"
-import { ConnectEvent, DisconnectEvent } from "opt/nodejs/Events"; 
+import { DisconnectEvent } from "opt/nodejs/Events"; 
+import Publisher from "opt/nodejs/Publisher";
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -20,17 +21,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         })}
     try {
         const disconnectEvent = new DisconnectEvent(event.requestContext.connectionId)
-        const client = new DynamoDBClient({region:"us-east-1"})
-        const command = new PutItemCommand({
-            TableName: process.env.EVENTS_TABLE,
-            Item:{
-                id: {S: disconnectEvent.id}, 
-                timestamp: {S: disconnectEvent.timestamp.toISOString()},
-                connectionId: {S: disconnectEvent.connectionId},
-                type: {S: "disconnectEvent"}
-            },
-          })
-        await client.send(command)
+        await Publisher.Publish(disconnectEvent)
+        
         response = {
             statusCode: 200,
             body: JSON.stringify({

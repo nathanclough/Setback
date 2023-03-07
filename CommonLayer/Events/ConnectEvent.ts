@@ -2,15 +2,14 @@ import {Event} from "./Event"
 export class ConnectEvent extends Event{
     public readonly connectionId
     constructor(connectionId: string){
-        super()
+        super("ConnectEvent")
         this.connectionId = connectionId
     }
 
-    public override toJSON(){
-        
+    public override toDbItem(){
         return{
-            ...super.toJSON(),
-            connectionId: this.connectionId
+            ...super.toDbItem(),
+            connectionId: {S: this.connectionId}
         } 
     }
 } 

@@ -1,16 +1,21 @@
+import { AttributeValue } from "@aws-sdk/client-dynamodb";
 import {v4 as uuidv4}  from "uuid";
 export abstract class Event {
     timestamp: Date
     id: string
-    constructor() {
+    eventType: string
+    constructor(eventType: string) {
         this.id = uuidv4()
         this.timestamp = new Date()
+        this.eventType = eventType
     }
 
-    toJSON():{[key:string]: string}{
-        return{
-            id: this.id,
-            timestamp: this.timestamp.toISOString()
+
+    toDbItem():Record<string, AttributeValue>{
+        return {
+            id: {S: this.id}, 
+            timestamp: {S: this.timestamp.toISOString()},
+            type: {S: this.eventType}
         }
     } 
 }

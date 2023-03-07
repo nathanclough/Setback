@@ -1,13 +1,14 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import Publisher from 'opt/nodejs/Publisher';
 import { lambdaHandler } from '../../app';
-import {mockClient} from "aws-sdk-client-mock";
+
 describe('Unit test for app handler', function () {
     const env = process.env
     const EVENTS_TABLE = "tablename"
     beforeEach(() => {
         jest.resetModules()
         process.env = { ...env,  EVENTS_TABLE : EVENTS_TABLE}
+        jest.spyOn(Publisher,"Publish").mockResolvedValue({} as any)
     })
 
     afterEach(() => {
@@ -64,7 +65,6 @@ describe('Unit test for app handler', function () {
             resource: '',
             stageVariables: {},
         };
-        mockClient(DynamoDBClient);
         const result: APIGatewayProxyResult = await lambdaHandler(event);
 
         expect(result.statusCode).toEqual(200);
