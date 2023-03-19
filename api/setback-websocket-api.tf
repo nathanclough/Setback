@@ -1,3 +1,7 @@
+output "api_endpoint" {
+    value = aws_apigatewayv2_api.setback_api_gateway.api_endpoint
+}
+
 resource "aws_apigatewayv2_api" "setback_api_gateway" {
   name                       = "setback-websocket-api"
   protocol_type              = "WEBSOCKET"

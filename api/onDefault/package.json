@@ -6,7 +6,9 @@
   "author": "Nathan Clough",
   "license": "MIT",
   "dependencies": {
-    "esbuild": "^0.14.14"
+    "@types/uuid": "^9.0.1",
+    "esbuild": "^0.14.14",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "unit": "jest",

@@ -20,3 +20,7 @@ provider "aws" {
 module "api" {
   source = "./api"
 }
+
+output "apigateway_connection" {
+    value = module.api.api_endpoint
+}

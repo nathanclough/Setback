@@ -1,64 +1,46 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { lambdaHandler } from '../../app';
-
+import Publisher from 'opt/nodejs/Publisher';
 describe('Unit test for app handler', function () {
-    it('verifies successful response', async () => {
-        const event: APIGatewayProxyEvent = {
-            httpMethod: 'get',
-            body: '',
-            headers: {},
-            isBase64Encoded: false,
-            multiValueHeaders: {},
-            multiValueQueryStringParameters: {},
-            path: '/hello',
-            pathParameters: {},
-            queryStringParameters: {},
-            requestContext: {
-                accountId: '123456789012',
-                apiId: '1234',
-                authorizer: {},
-                httpMethod: 'get',
-                identity: {
-                    accessKey: '',
-                    accountId: '',
-                    apiKey: '',
-                    apiKeyId: '',
-                    caller: '',
-                    clientCert: {
-                        clientCertPem: '',
-                        issuerDN: '',
-                        serialNumber: '',
-                        subjectDN: '',
-                        validity: { notAfter: '', notBefore: '' },
-                    },
-                    cognitoAuthenticationProvider: '',
-                    cognitoAuthenticationType: '',
-                    cognitoIdentityId: '',
-                    cognitoIdentityPoolId: '',
-                    principalOrgId: '',
-                    sourceIp: '',
-                    user: '',
-                    userAgent: '',
-                    userArn: '',
-                },
-                path: '/hello',
-                protocol: 'HTTP/1.1',
-                requestId: 'c6af9ac6-7b61-11e6-9a41-93e8deadbeef',
-                requestTimeEpoch: 1428582896000,
-                resourceId: '123456',
-                resourcePath: '/hello',
-                stage: 'dev',
-            },
-            resource: '',
-            stageVariables: {},
-        };
-        const result: APIGatewayProxyResult = await lambdaHandler(event);
+    const env = process.env
+    const EVENTS_TABLE = "tablename"
+    const MockPublisher = jest.fn()
+    beforeEach(() => {
+        jest.resetModules()
+        MockPublisher.mockResolvedValue({} as any)
+        jest.spyOn(Publisher,"Publish").mockImplementation(MockPublisher)
+        process.env = { ...env,  EVENTS_TABLE : EVENTS_TABLE}
+    })
 
-        expect(result.statusCode).toEqual(200);
-        expect(result.body).toEqual(
-            JSON.stringify({
-                message: 'hello world',
+    afterEach(() => {
+        process.env = env
+    })
+
+    test('Valid Create Game command publishes event', async () => {
+        const event: APIGatewayProxyEvent = {
+            body: JSON.stringify({
+                type: "CreateGameCommand",
+                teamId: "teamOneId"
             }),
-        );
+      
+        } as APIGatewayProxyEvent;
+        await lambdaHandler(event);
+
+        expect(MockPublisher).toBeCalledWith(expect.objectContaining({"eventType": "CreateGameEvent", teamId: "teamOneId"}));
+        
     });
+
+    test('Valid JoinGameCommand publishes event', async () => {
+        const event: APIGatewayProxyEvent = {
+            
+                body: JSON.stringify({
+                    type: "JoinGameCommand",
+                    teamId: "teamId"
+                })
+        } as APIGatewayProxyEvent
+
+        await lambdaHandler(event)
+
+        expect(MockPublisher).toBeCalledWith(expect.objectContaining({"eventType": "JoinGameEvent",teamId: "teamId"}))
+    })
 });

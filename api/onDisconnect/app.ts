@@ -21,13 +21,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         })}
     try {
         const disconnectEvent = new DisconnectEvent(event.requestContext.connectionId)
-        await Publisher.Publish(disconnectEvent)
+        const res = await Publisher.Publish(disconnectEvent)
         
         response = {
             statusCode: 200,
-            body: JSON.stringify({
-                message: 'hello world - from disconnect',
-            }),
+            body: JSON.stringify(res),
         };
     } catch (err: unknown) {
         console.log(err);

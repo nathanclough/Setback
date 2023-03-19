@@ -7,7 +7,9 @@ const Publish = async (event: Event)=> {
             TableName: process.env.EVENTS_TABLE,
             Item: event.toDbItem(),
           })
+          console.log("no")
           const result =  await client.send(command)    
+          console.log("Sent publisher result")
           return result
 }
 
